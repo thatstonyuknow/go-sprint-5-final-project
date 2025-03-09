@@ -14,7 +14,7 @@ import (
 
 var (
 	ErrConvToInt           = errors.New("converting into int error")
-	ErrWrongLenthSlice     = errors.New("wrong lenth of slice error")
+	ErrWrongLenthSlice     = errors.New("wrong length of slice error")
 	ErrParseDate           = errors.New("parsing date error")
 	ErrWrongDuration       = errors.New("duration can't lower than or equal 0")
 	ErrUnknownTrainingType = errors.New("unknown training type")
@@ -41,14 +41,14 @@ func (t *Training) Parse(datastring string) (err error) {
 	t.Steps = stepNumber
 
 	training := map[string]string{
-		"Бег":    "Running",
-		"Ходьба": "Walking",
+		"Бег":    "Бег",
+		"Ходьба": "Ходьба",
 	}
 
-	if a, ok := training[parts[1]]; !ok {
+	a, ok := training[parts[1]]
+	if !ok {
 		return ErrParseDate
 	}
-
 	t.TrainingType = a
 
 	tm, err := time.ParseDuration(parts[2])
