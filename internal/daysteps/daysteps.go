@@ -33,20 +33,20 @@ type DaySteps struct {
 func (ds *DaySteps) Parse(datastring string) (err error) {
 	parts := strings.Split(datastring, ",")
 	if len(parts) != 2 {
-		return ErrWrongDataFormat
+		return fmt.Errorf("%w: %v", ErrWrongDataFormat, err) 
 	}
 
 	// Парсим количество шагов
 	steps, err := strconv.Atoi(strings.TrimSpace(parts[0]))
 	if err != nil {
-		return ErrConvSteps
+		return fmt.Errorf("%w: %v", ErrConvSteps, err)
 	}
 	ds.Steps = steps
 
 	// Парсим длительность
 	dur, err := time.ParseDuration(strings.TrimSpace(parts[1]))
 	if err != nil {
-		return ErrParseDuration
+		return fmt.Errorf("%w: %v", ErrParseDuration, err)
 	}
 	ds.Duration = dur
 

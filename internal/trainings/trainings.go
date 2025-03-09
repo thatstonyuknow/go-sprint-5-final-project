@@ -15,7 +15,7 @@ import (
 var (
 	ErrConvToInt           = errors.New("converting into int error")
 	ErrWrongLenthSlice     = errors.New("wrong length of slice error")
-	ErrParseDate           = errors.New("parsing date error")
+	ErrParseDuration       = errors.New("parsing duration error")
 	ErrWrongDuration       = errors.New("duration can't lower than or equal 0")
 	ErrUnknownTrainingType = errors.New("unknown training type")
 )
@@ -32,11 +32,11 @@ type Training struct {
 func (t *Training) Parse(datastring string) (err error) {
 	parts := strings.Split(datastring, ",")
 	if len(parts) != 3 {
-		return ErrWrongLenthSlice
+		return fmt.Errorf("%w: %v", ErrWrongLenthSlice, err)
 	}
 	stepNumber, err := strconv.Atoi(parts[0])
 	if err != nil {
-		return ErrConvToInt
+		return fmt.Errorf("%w: %v", ErrConvToInt, err)
 	}
 	t.Steps = stepNumber
 
@@ -47,13 +47,13 @@ func (t *Training) Parse(datastring string) (err error) {
 
 	a, ok := training[parts[1]]
 	if !ok {
-		return ErrParseDate
+		return fmt.Errorf("%w: %v", ErrUnknownTrainingType, err)
 	}
 	t.TrainingType = a
 
 	tm, err := time.ParseDuration(parts[2])
 	if err != nil {
-		return ErrParseDate
+		return fmt.Errorf("%w: %v", ErrParseDuration, err)
 	}
 
 	t.Duration = tm
@@ -85,7 +85,8 @@ func (t Training) ActionInfo() (string, error) {
 
 		return str, nil
 
-	} else if t.TrainingType == training[1] {
+	}
+	if t.TrainingType == training[1] {
 		energyAmount, err := spentenergy.RunningSpentCalories(t.Steps, t.Personal.Weight, t.Duration)
 		if err != nil {
 			return "", err
@@ -95,7 +96,6 @@ func (t Training) ActionInfo() (string, error) {
 			t.TrainingType, t.Duration.Hours(), distance, meanSpeed, energyAmount)
 
 		return str, nil
-	} else {
-		return "неизвестный тип тренировки", ErrUnknownTrainingType
 	}
+	return "неизвестный тип тренировки", ErrUnknownTrainingType
 }

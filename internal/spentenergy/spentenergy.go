@@ -39,11 +39,13 @@ const (
 // Создайте функцию ниже.
 func WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
 	if weight <= 0 {
-		return float64(0), ErrWrongWeight
-	} else if height <= 0 {
-		return float64(0), ErrWrongHeight
-	} else if duration <= 0 {
-		return float64(0), ErrWrongDuration
+		return 0.0, ErrWrongWeight
+	}
+	if height <= 0 {
+		return 0.0, ErrWrongHeight
+	}
+	if duration <= 0 {
+		return 0.0, ErrWrongDuration
 	}
 
 	meanSpeed:= MeanSpeed(steps, duration)
@@ -68,10 +70,12 @@ const (
 // Создайте функцию ниже.
 func RunningSpentCalories(steps int, weight float64, duration time.Duration) (float64, error) {
 	if weight <= 0 {
-		return float64(0), ErrWrongWeight
-	} else if duration <= 0 {
-		return float64(0), ErrWrongDuration
+		return 0.0, ErrWrongWeight
 	}
+	if duration <= 0 {
+		return 0.0, ErrWrongDuration
+	}
+
 	meanSpeed:= MeanSpeed(steps, duration)
 
 	return ((runningCaloriesMeanSpeedMultiplier*meanSpeed)-runningCaloriesMeanSpeedShift) * weight, nil
@@ -88,7 +92,7 @@ func RunningSpentCalories(steps int, weight float64, duration time.Duration) (fl
 // Создайте функцию ниже.
 func MeanSpeed(steps int, duration time.Duration) float64 {
 	if duration <= 0{
-		return float64(0)
+		return 0.0
 	}
 	distance:= Distance(steps)
 	return float64(distance / duration.Hours())
